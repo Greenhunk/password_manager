@@ -26,7 +26,55 @@ def generate_password():
     for char in password_list:
         password += char
 
-    # entry_password.insert(0, password)
+    entry_password.insert(0, password)
+
+    # ---------------------------- SAVE PASSWORD ------------------------------- #
+    def save():
+
+        webiste = entry_website.get()
+        email = entry_email.get()
+        password = entry_password.get()
+        new_data = {
+            webiste: {
+                "email": email,
+                "password": password,
+            }
+
+        }
+
+        if len(webiste) == 0 or len(password) == 0:
+            messagebox.showerror(title="Oops", message="Please don't leave any fields empty")
+        else:
+            try:
+                with open("myfile.json", "r") as data_file:
+                    # Reading the old data
+                    data = json.load(data_file)
+
+            except FileNotFoundError:
+                with open("myfile.json", "w") as data_file:
+                    json.dump(new_data, data_file)
+            else:
+                # Updating the old data
+                data.update(new_data)
+                with open("myfile.json", "w") as data_file:
+                    json.dump(data, data_file, indent=4)
+            finally:
+                entry_website.delete(0, END)
+                entry_password.delete(0, END)
+
+    # ---------------------------- SEARCH ------------------------------- #
+    def search():
+        try:
+            with open("myfile.json", "r") as data_file:
+                data = json.load(data_file)
+                webiste = entry_website.get()
+                email = data[webiste]["email"]
+                password = data[webiste]["password"]
+                messagebox.showinfo(title=webiste, message=f"Email: {email}\nPassword: {password}")
+        except KeyError:
+            messagebox.showerror(title="Oops", message="No details for the website exists")
+        except FileNotFoundError:
+            messagebox.showerror(title="Oops", message="No data file found")
 
     # ---------------------------- UI SETUP ------------------------------- #
     window = Tk()
