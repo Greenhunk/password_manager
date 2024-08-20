@@ -27,85 +27,85 @@ def generate_password():
         password += char
 
     entry_password.insert(0, password)
+# ---------------------------- SAVE PASSWORD ------------------------------- #
+def save():
 
-    # ---------------------------- SAVE PASSWORD ------------------------------- #
-    def save():
-
-        webiste = entry_website.get()
-        email = entry_email.get()
-        password = entry_password.get()
-        new_data = {
-            webiste: {
-                "email": email,
-                "password": password,
-            }
-
+    webiste = entry_website.get()
+    email = entry_email.get()
+    password = entry_password.get()
+    new_data = {
+        webiste: {
+            "email": email,
+            "password": password,
         }
 
-        if len(webiste) == 0 or len(password) == 0:
-            messagebox.showerror(title="Oops", message="Please don't leave any fields empty")
-        else:
-            try:
-                with open("myfile.json", "r") as data_file:
-                    # Reading the old data
-                    data = json.load(data_file)
+    }
 
-            except FileNotFoundError:
-                with open("myfile.json", "w") as data_file:
-                    json.dump(new_data, data_file)
-            else:
-                # Updating the old data
-                data.update(new_data)
-                with open("myfile.json", "w") as data_file:
-                    json.dump(data, data_file, indent=4)
-            finally:
-                entry_website.delete(0, END)
-                entry_password.delete(0, END)
-
-    # ---------------------------- SEARCH ------------------------------- #
-    def search():
+    if len(webiste) == 0 or len(password) == 0:
+        messagebox.showerror(title= "Oops", message="Please don't leave any fields empty")
+    else:
         try:
             with open("myfile.json", "r") as data_file:
+                # Reading the old data
                 data = json.load(data_file)
-                webiste = entry_website.get()
-                email = data[webiste]["email"]
-                password = data[webiste]["password"]
-                messagebox.showinfo(title=webiste, message=f"Email: {email}\nPassword: {password}")
-        except KeyError:
-            messagebox.showerror(title="Oops", message="No details for the website exists")
+
         except FileNotFoundError:
-            messagebox.showerror(title="Oops", message="No data file found")
+            with open("myfile.json", "w") as data_file:
+                json.dump(new_data, data_file)
+        else:
+            # Updating the old data
+            data.update(new_data)
+            with open("myfile.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            entry_website.delete(0, END)
+            entry_password.delete(0, END)
 
-    # ---------------------------- UI SETUP ------------------------------- #
-    window = Tk()
-    window.title("Tanvir's Password_manager")
-    window.config(padx=50, pady=50)
 
-    canvas = Canvas(height=200, width=200)
-    lock_img = PhotoImage(file="logo.png")
-    canvas.create_image(100, 100, image=lock_img)
-    canvas.grid(row=0, column=1)
+# ---------------------------- SEARCH ------------------------------- #
+def search():
+    try:
+        with open("myfile.json", "r") as data_file:
+            data = json.load(data_file)
+            webiste = entry_website.get()
+            email = data[webiste]["email"]
+            password = data[webiste]["password"]
+            messagebox.showinfo(title=webiste, message=f"Email: {email}\nPassword: {password}")
+    except KeyError:
+        messagebox.showerror(title="Oops", message="No details for the website exists")
+    except FileNotFoundError:
+        messagebox.showerror(title="Oops", message="No data file found")
 
-    label_website = Label(text="Website")
-    label_website.grid(row=1, column=0)
-    label_email = Label(text="Email/Username")
-    label_email.grid(column=0, row=2)
-    label_password = Label(text="Password")
-    label_password.grid(column=0, row=3)
+# ---------------------------- UI SETUP ------------------------------- #
+window = Tk()
+window.title("Tanvir's Password_manager")
+window.config(padx=50, pady=50)
 
-    entry_website = Entry(width=21)
-    entry_website.grid(column=1, row=1)
-    entry_website.focus()
-    entry_email = Entry(width=35)
-    entry_email.grid(column=1, row=2, columnspan=2)
-    entry_password = Entry(width=21)
-    entry_password.grid(column=1, row=3)
+canvas = Canvas(height=200, width=200)
+lock_img = PhotoImage(file="logo.png")
+canvas.create_image(100, 100, image =lock_img)
+canvas.grid(row=0, column=1)
 
-    button_password = Button(text="Generate Password", width=14, command=generate_password)
-    button_password.grid(column=2, row=3)
-    button_add = Button(text="Add", width=36, command=save)
-    button_add.grid(column=1, row=4, columnspan=2)
-    button_search = Button(text="Search", width=10, command=search)
-    button_search.grid(column=2, row=1)
+label_website = Label(text = "Website")
+label_website.grid(row= 1, column= 0)
+label_email = Label(text = "Email/Username")
+label_email.grid(column= 0, row= 2)
+label_password = Label(text = "Password")
+label_password.grid(column= 0, row= 3)
 
-    window.mainloop()
+entry_website = Entry(width = 21)
+entry_website.grid(column= 1, row =1)
+entry_website.focus( )
+entry_email = Entry(width = 35)
+entry_email.grid(column= 1, row =2, columnspan=2)
+entry_password = Entry(width = 21)
+entry_password.grid(column= 1, row =3)
+
+button_password = Button(text = "Generate Password", width = 14, command=generate_password)
+button_password.grid(column=2, row = 3)
+button_add = Button(text = "Add", width=36, command=save)
+button_add.grid(column=1, row = 4, columnspan=2)
+button_search = Button(text = "Search", width = 10, command=search)
+button_search.grid(column=2, row = 1)
+
+window.mainloop()
